@@ -1,25 +1,24 @@
-//package com.example.integrationtestproject.tcp.my;
+//package com.example.integrationtestproject.tcp.my.dsl;
 //
-//import lombok.RequiredArgsConstructor;
-//import lombok.extern.slf4j.Slf4j;
 //import org.springframework.beans.factory.annotation.Value;
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.context.annotation.Configuration;
 //import org.springframework.context.event.EventListener;
 //import org.springframework.integration.channel.DirectChannel;
-//import org.springframework.integration.config.EnableIntegration;
-//import org.springframework.integration.ip.tcp.TcpInboundGateway;
+//import org.springframework.integration.dsl.IntegrationFlow;
 //import org.springframework.integration.ip.tcp.TcpReceivingChannelAdapter;
 //import org.springframework.integration.ip.tcp.connection.*;
 //import org.springframework.integration.ip.tcp.serializer.AbstractByteArraySerializer;
 //import org.springframework.integration.ip.tcp.serializer.ByteArrayRawSerializer;
+//import org.springframework.messaging.Message;
 //import org.springframework.messaging.MessageChannel;
 //
-//@Slf4j
+//import java.util.ArrayList;
+//import java.util.Arrays;
+//import java.util.List;
+//
 //@Configuration
-//@RequiredArgsConstructor
-//@EnableIntegration
-//public class TestIntegrationConfig {
+//public class IntegrationConfiguration {
 //
 //    @Value("${tcpServer.port}")
 //    private int port;
@@ -29,21 +28,6 @@
 //        return new DirectChannel();
 //    }
 //
-////    @Bean
-////    TcpNioServerConnectionFactorySpec serverFactory() {
-////        return Tcp.nioServer(port);
-////    }
-//
-////    @Bean
-////    public AbstractServerConnectionFactory  clientConnectionFactory() {
-////        TcpNioServerConnectionFactory tcpNioServerConnectionFactory = new TcpNioServerConnectionFactory(this.port);
-////        tcpNioServerConnectionFactory.setUsingDirectBuffers(true);
-////        tcpNioServerConnectionFactory.setSingleUse(false);
-////        ByteArrayLengthHeaderSerializer serializer = new ByteArrayLengthHeaderSerializer(2);
-////        tcpNioServerConnectionFactory.setSerializer(serializer);
-////        tcpNioServerConnectionFactory.setDeserializer(serializer);
-////        return tcpNioServerConnectionFactory;
-////    }
 //
 //    @Bean
 //    public AbstractServerConnectionFactory serverConnectionFactory() {
@@ -61,29 +45,49 @@
 //        TcpReceivingChannelAdapter tcpReceivingChannelAdapter = new TcpReceivingChannelAdapter();
 //        tcpReceivingChannelAdapter.setConnectionFactory(serverFactory);
 //        tcpReceivingChannelAdapter.setOutputChannel(inboundChannel);
-////        tcpReceivingChannelAdapter.setAutoStartup(true);
-////        tcpReceivingChannelAdapter.setRetryInterval(5000);
 //        return tcpReceivingChannelAdapter;
 //    }
 //
-////    @Bean
-////    public TcpSendingMessageHandler tcpSendingClientMessageHandler(
-////            AbstractServerConnectionFactory connectionFactory) {
-////        TcpSendingMessageHandler tcpSendingMessageHandler = new TcpSendingMessageHandler();
-////        tcpSendingMessageHandler.setConnectionFactory(connectionFactory);
-////        tcpSendingMessageHandler.setClientMode(true);
-////        tcpSendingMessageHandler.setRetryInterval(5000);
-////        tcpSendingMessageHandler.setLoggingEnabled(true);
-////        return tcpSendingMessageHandler;
-////    }
+//    @Bean
+//    public IntegrationFlow flowInput(MessageChannel inboundChannel) {
+//        return IntegrationFlow.from(inboundChannel)
+//                .transform(IntegrationConfiguration::bytesToHex)
+//                .handle((s) -> System.out.println(s.getPayload()))
+//                .get();
+//    }
 //
-////    @Bean
-////    public TcpInboundGateway tcpInboundGateway(
-////            AbstractServerConnectionFactory connectionFactory) {
-////        TcpInboundGateway tcpInboundGateway = new TcpInboundGateway();
-////        tcpInboundGateway.setConnectionFactory(connectionFactory);
-////        return tcpInboundGateway;
-////    }
+//
+//    @Bean
+//    public IntegrationFlow flowInput() {
+//        return IntegrationFlow.from(inboundChannel())
+//                .split(Message.class, this::splitBytes) // Разделяем байты
+//                .handle(m -> {
+//                    System.out.println("Received: " + bytesToHex((byte[]) m.getPayload())); // Немедленный вывод
+//                })
+//                .get();
+//    }
+//
+//    private List<byte[]> splitBytes(Message<?> message) {
+//        byte[] payload = (byte[]) message.getPayload();
+//        List<byte[]> messages = new ArrayList<>();
+//        int chunkSize = 4; // Размер одного сообщения
+//
+//        for (int i = 0; i < payload.length; i += chunkSize) {
+//            int end = Math.min(payload.length, i + chunkSize);
+//            messages.add(Arrays.copyOfRange(payload, i, end));
+//        }
+//
+//        return messages;
+//    }
+//
+//
+//    private static String bytesToHex(byte[] bytes) {
+//        StringBuilder sb = new StringBuilder();
+//        for (byte b : bytes) {
+//            sb.append(String.format("%02X ", b));
+//        }
+//        return sb.toString().trim();
+//    }
 //
 //
 //    @EventListener

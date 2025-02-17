@@ -1,6 +1,6 @@
 package com.example.integrationtestproject;
 
-//import com.example.integrationtestproject.tcp.my.TestIntegrationConfig;
+import com.example.integrationtestproject.tcp.tutorial.t2transformer.IntegrationConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -9,11 +9,12 @@ public class IntegrationTestProjectApplication {
 
     public static void main(String[] args) {
 
-//        Class<?>[] classes = new Class<?>[] {IntegrationTestProjectApplication.class,
-//                TestIntegrationConfig.class
-//        };
+        Class<?>[] classes = new Class<?>[] {IntegrationTestProjectApplication.class,
+//                IntegrationConfig.class,
+                IntegrationTestProjectApplication.class
+        };
 
-        SpringApplication.run(IntegrationTestProjectApplication.class, args);
+        SpringApplication.run(classes, args);
     }
 
 }
