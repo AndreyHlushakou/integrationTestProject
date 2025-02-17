@@ -1,4 +1,4 @@
-package com.example.integrationtestproject.tcp.tutorial.t2transformer;
+package com.example.integrationtestproject.tcp.tutorial.t3Transformer;
 
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.messaging.Message;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class StudentService {
 
     @ServiceActivator(inputChannel = "integration.student.objectToJson.channel", outputChannel = "integration.student.jsonToObject.fromTransformer.channel")
-    public Message<?> reciveMessage(Message<?> message) throws MessagingException {
+    public Message<?> receiveMessage(Message<?> message) throws MessagingException {
         System.out.println("################################");
         System.out.println(message);
         System.out.println("################################");

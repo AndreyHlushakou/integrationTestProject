@@ -1,11 +1,12 @@
 //package com.example.integrationtestproject.tcp.my;
 //
-//import lombok.RequiredArgsConstructor;
 //import lombok.extern.slf4j.Slf4j;
+//import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.beans.factory.annotation.Value;
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.context.annotation.Configuration;
 //import org.springframework.context.event.EventListener;
+//import org.springframework.integration.annotation.IntegrationComponentScan;
 //import org.springframework.integration.channel.DirectChannel;
 //import org.springframework.integration.config.EnableIntegration;
 //import org.springframework.integration.ip.tcp.TcpInboundGateway;
@@ -17,8 +18,8 @@
 //
 //@Slf4j
 //@Configuration
-//@RequiredArgsConstructor
 //@EnableIntegration
+//@IntegrationComponentScan
 //public class TestIntegrationConfig {
 //
 //    @Value("${tcpServer.port}")
@@ -77,13 +78,16 @@
 ////        return tcpSendingMessageHandler;
 ////    }
 //
+//    @Bean
+//    public TcpInboundGateway tcpInboundGateway(
+//            AbstractServerConnectionFactory connectionFactory) {
+//        TcpInboundGateway tcpInboundGateway = new TcpInboundGateway();
+//        tcpInboundGateway.setConnectionFactory(connectionFactory);
+//        return tcpInboundGateway;
+//    }
+//
 ////    @Bean
-////    public TcpInboundGateway tcpInboundGateway(
-////            AbstractServerConnectionFactory connectionFactory) {
-////        TcpInboundGateway tcpInboundGateway = new TcpInboundGateway();
-////        tcpInboundGateway.setConnectionFactory(connectionFactory);
-////        return tcpInboundGateway;
-////    }
+//
 //
 //
 //    @EventListener

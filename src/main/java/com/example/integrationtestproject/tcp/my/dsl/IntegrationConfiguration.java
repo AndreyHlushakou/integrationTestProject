@@ -57,15 +57,15 @@
 //    }
 //
 //
-//    @Bean
-//    public IntegrationFlow flowInput() {
-//        return IntegrationFlow.from(inboundChannel())
-//                .split(Message.class, this::splitBytes) // Разделяем байты
-//                .handle(m -> {
-//                    System.out.println("Received: " + bytesToHex((byte[]) m.getPayload())); // Немедленный вывод
-//                })
-//                .get();
-//    }
+////    @Bean
+////    public IntegrationFlow flowInput() {
+////        return IntegrationFlow.from(inboundChannel())
+////                .split(Message.class, this::splitBytes) // Разделяем байты
+////                .handle(m -> {
+////                    System.out.println("Received: " + bytesToHex((byte[]) m.getPayload())); // Немедленный вывод
+////                })
+////                .get();
+////    }
 //
 //    private List<byte[]> splitBytes(Message<?> message) {
 //        byte[] payload = (byte[]) message.getPayload();
