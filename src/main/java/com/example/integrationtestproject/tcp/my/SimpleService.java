@@ -1,35 +1,39 @@
-//package com.example.integrationtestproject.tcp.my;
-//
-//import org.springframework.integration.annotation.ServiceActivator;
-//import org.springframework.messaging.Message;
-//import org.springframework.messaging.MessageChannel;
-//import org.springframework.messaging.MessagingException;
-//import org.springframework.messaging.support.MessageBuilder;
-//import org.springframework.stereotype.Component;
-//
-//@Component
-//public class SimpleService {
-//
-//    @ServiceActivator(inputChannel = "integration.gateway.channel")
-//    public void anotherMessage(Message<byte[]> message) throws MessagingException {
-//        MessageChannel replyChannel = (MessageChannel) message.getHeaders().getReplyChannel();
-//
-//        byte[] from = message.getPayload();
-//        System.out.println(bytesToHex(from));
-//
-////        MessageBuilder.fromMessage(message);
-////        Message<String> newMessage = MessageBuilder
-////                .withPayload("Welcome, " + message.getPayload() + " to Spring Integration")
-////                .build();
-////        replyChannel.send(newMessage);
-//    }
-//
-//    private static String bytesToHex(byte[] bytes) {
-//        StringBuilder sb = new StringBuilder();
-//        for (byte b : bytes) {
-//            sb.append(String.format("%02X ", b));
-//        }
-//        return sb.toString().trim();
-//    }
-//
-//}
+package com.example.integrationtestproject.tcp.my;
+
+import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessagingException;
+import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.stereotype.Component;
+
+@Component
+public class SimpleService {
+
+    @ServiceActivator(inputChannel = "inboundChannel", outputChannel = "outboundChannel")
+    public Message<byte[]> processJsonToObject(Message<byte[]> message) throws MessagingException {
+
+        handlerMessage(message);
+
+        byte[] response = new byte[]{0x11, 0x22, 0x33};
+        Message<byte[]> newMessage = MessageBuilder.withPayload(response).build();
+        return newMessage;
+    }
+
+    private static boolean handlerMessage(Message<byte[]> message) {
+        byte[] byteMessage = message.getPayload();
+        System.out.println("################################");
+        System.out.println("Object - " + bytesToHex(byteMessage));
+        System.out.println("################################");
+
+        return byteMessage[0] == 0x11;
+    }
+
+    static String bytesToHex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02X ", b));
+        }
+        return sb.toString().trim();
+    }
+
+}
