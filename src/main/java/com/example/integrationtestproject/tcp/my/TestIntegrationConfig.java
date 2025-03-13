@@ -11,14 +11,9 @@ import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.ip.tcp.TcpReceivingChannelAdapter;
 import org.springframework.integration.ip.tcp.TcpSendingMessageHandler;
-import org.springframework.integration.ip.tcp.connection.AbstractServerConnectionFactory;
-import org.springframework.integration.ip.tcp.connection.TcpConnectionCloseEvent;
-import org.springframework.integration.ip.tcp.connection.TcpConnectionOpenEvent;
-import org.springframework.integration.ip.tcp.connection.TcpNetServerConnectionFactory;
+import org.springframework.integration.ip.tcp.connection.*;
 import org.springframework.integration.ip.tcp.serializer.AbstractByteArraySerializer;
 import org.springframework.messaging.MessageChannel;
-
-import static com.example.integrationtestproject.tcp.my.SimpleService.bytesToHex;
 
 @Slf4j
 @Configuration
@@ -45,6 +40,7 @@ public class TestIntegrationConfig {
         AbstractByteArraySerializer serializer = new MyByteArraySerializer();
         serverConnectionFactory.setSerializer(serializer);
         serverConnectionFactory.setDeserializer(serializer);
+        serverConnectionFactory.setSingleUse(false);
         return serverConnectionFactory;
     }
 
@@ -55,7 +51,6 @@ public class TestIntegrationConfig {
         TcpReceivingChannelAdapter tcpReceivingChannelAdapter = new TcpReceivingChannelAdapter();
         tcpReceivingChannelAdapter.setConnectionFactory(serverConnectionFactory);
         tcpReceivingChannelAdapter.setOutputChannel(inboundChannel);
-        tcpReceivingChannelAdapter.setAutoStartup(true);
         return tcpReceivingChannelAdapter;
     }
 
@@ -79,9 +74,19 @@ public class TestIntegrationConfig {
         System.out.println("Client disconnected: " + event.getConnectionId());
     }
 
-//    @ServiceActivator(inputChannel = "inboundChannel")
-//    public void logMessage(byte[] message) {
-//        log.info("messageReceiver:{}", bytesToHex(message));
+//    @Filter(inputChannel = "inboundChannel")
+//    @Bean
+//    MessageFilter filter() {
+//        MessageFilter filter = new MessageFilter(new MessageSelector() {
+//            @Override
+//            public boolean accept(Message<?> message) {
+//                byte[] arr = (byte[]) message.getPayload();
+//                return arr.length != 0;
+//            }
+//        });
+//        filter.setOutputChannelName("filterChannel");
+////        filter.setDiscardChannelName("nullChannel"); // на тот случай если в сериализаторе вместо throw будет возвращать пустые сообщения
+//        return filter;
 //    }
 
 }

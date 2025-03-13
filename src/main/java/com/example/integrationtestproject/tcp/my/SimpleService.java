@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class SimpleService {
 
     @ServiceActivator(inputChannel = "inboundChannel", outputChannel = "outboundChannel")
-    public Message<byte[]> processJsonToObject(Message<byte[]> message) throws MessagingException {
+    public Message<byte[]> processMessage(Message<byte[]> message) throws MessagingException {
 
         handlerMessage(message);
 
